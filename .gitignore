@@ -1,0 +1,8 @@
+# Directiories
+.cache/
+.github/
+build/
+__pycache__
+
+# Files
+.gdb_history
