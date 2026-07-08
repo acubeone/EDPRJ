@@ -1,9 +1,11 @@
 # Directiories
 .cache/
 .github/
+.venv/
 build/
 __pycache__
 
 # Files
 .gdb_history
+.env
 *.csv

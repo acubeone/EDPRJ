@@ -1,5 +1,3 @@
-DROP SCHEMA universidade CASCADE;
-
 CREATE SCHEMA universidade;
 
 CREATE DOMAIN universidade.matricula AS VARCHAR(7);
@@ -43,11 +41,11 @@ CREATE TABLE universidade.departamento(
 	CONSTRAINT pk_departamento PRIMARY KEY(cod_depto)
 );
 
-ALTER TABLE universidade.professor ADD 
+ALTER TABLE universidade.professor ADD
 CONSTRAINT fk_alocacao FOREIGN KEY (departamento) REFERENCES universidade.departamento(cod_depto)
 ON DELETE SET NULL ON UPDATE CASCADE;
 
-ALTER TABLE universidade.departamento ADD 
+ALTER TABLE universidade.departamento ADD
 CONSTRAINT fk_chefia FOREIGN KEY (chefe) REFERENCES universidade.professor(mat_professor)
 ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -78,7 +76,7 @@ CREATE TABLE universidade.estudante(
 	CONSTRAINT fk_usuario FOREIGN KEY (cpf) REFERENCES universidade.usuario(cpf)
 	ON DELETE SET NULL ON UPDATE CASCADE,
 	CONSTRAINT uq_cpf UNIQUE(cpf)
-	
+
 );
 
 CREATE TABLE universidade.vinculo(
@@ -288,47 +286,47 @@ INSERT INTO universidade.estudante VALUES('E101', '22222222201', 7.0,2021);
 INSERT INTO universidade.usuario
     VALUES ('22222222202', 'Paul Bell', '1999/09/15', '{bell@email.com}', NULL,'paul','s2');
 INSERT INTO universidade.estudante VALUES  ('E102', '22222222202', 8.3,2021);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222203', 'Alan Turing', '1912/07/23', NULL,NULL,'alan', 's3');
 INSERT INTO universidade.estudante VALUES('E103', '22222222203', 6.7,2021);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222204', 'John Hopcroft', '1939/10/07', '{"hopcroft@lfc.com"}',NULL,'john','s4');
 INSERT INTO universidade.estudante VALUES('E104', '22222222204',0,2021);
-	
-INSERT INTO universidade.usuario 
+
+INSERT INTO universidade.usuario
 	VALUES ('22222222205', 'Ada Lovelace', '1985/11/27', NULL, NULL,'ada','s5');
 INSERT INTO universidade.estudante VALUES('E105', '22222222205',9,2022);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222206', 'Grace Hooper', '1996/12/10', '{"hooper@linguagens.com"}',NULL, 'grace','s5');
 INSERT INTO universidade.estudante VALUES('E106', '22222222206', 7.7,2022);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222207', 'Charles Babbage', '1971/12/26', NULL, NULL,'charles', 's6');
 INSERT INTO universidade.estudante VALUES('E107', '22222222207',5.5,2022);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222208', 'Musa al-Khwarizmi',  '1950/12/26', NULL, NULL, 'musa', 's7');
 INSERT INTO universidade.estudante VALUES('E108', '22222222208', 6.5,2023);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222209', 'Cesar Lattes',  '1924/06/11', '{"cesar@cnpq.com", "lattes@curriculo.com"}',NULL, 'lattes', 's8');
 INSERT INTO universidade.estudante VALUES('E109', '22222222209', 6.0,2023);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222210', 'Donald Knuth', '1938/01/10', '{"knuth@algorithms.com"}',NULL, 'knuth','s9');
 INSERT INTO universidade.estudante VALUES('E110', '22222222210', 2.1,2023);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222211', 'Abraham Silberschatz',  '1956/01/10', '{"silberchatz@sgbd.com"}',NULL, 'abraham','s10');
 INSERT INTO universidade.estudante VALUES('E111', '22222222211',3.3,2023);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222212', 'Elmasri Navathe',  '1944/03/24', NULL, NULL,'elmasri', 's11');
 INSERT INTO universidade.estudante VALUES('E112', '22222222212', 4.5,2024);
-	
+
 INSERT INTO universidade.usuario
     VALUES ('22222222213', 'Ramakrishnam Raghu',  '1965/08/22', NULL, NULL, 'raghu','s12');
 INSERT INTO universidade.estudante VALUES('E113', '22222222213', 8.1,2024);
@@ -367,12 +365,12 @@ INSERT INTO universidade.plano VALUES (3, 'P300', 'E106', 2018);
 INSERT INTO universidade.plano VALUES (4, 'P500', 'E107', 2018);
 INSERT INTO universidade.plano VALUES (5, 'P600', 'E108', 2018);
 INSERT INTO universidade.plano VALUES (1, 'P100', 'E109', 2018);
-	
+
 
 INSERT INTO universidade.disciplina VALUES('COMP0196', 'Fundamentos da Computação', NULL, 4, 'DCOMP');
 INSERT INTO universidade.disciplina VALUES('COMP0197', 'Programação Imperativa', NULL, 6, 'DCOMP' );
 INSERT INTO universidade.disciplina VALUES('COMP0198', 'Programação Orientada à Objetos', 'COMP0197', 4, 'DCOMP');
-INSERT INTO universidade.disciplina VALUES('COMP0199', 'Programação Declarativa', 'COMP0197', 4, 'DCOMP');    
+INSERT INTO universidade.disciplina VALUES('COMP0199', 'Programação Declarativa', 'COMP0197', 4, 'DCOMP');
 INSERT INTO universidade.disciplina VALUES('COMP0212', 'Estrutura de Dados I', 'COMP0197', 6, 'DCOMP');
 INSERT INTO universidade.disciplina VALUES('COMP0213', 'Estrutura de Dados II', 'COMP0212', 4, 'DCOMP');
 INSERT INTO universidade.disciplina VALUES('COMP0222', 'Inteligência Artificial', 'COMP0199', 4, 'DCOMP');
@@ -381,7 +379,7 @@ INSERT INTO universidade.disciplina VALUES('COMP0279', 'Desenvolvimento de Softw
 INSERT INTO universidade.disciplina VALUES('COMP0280', 'Desenvolvimento de Software II', 'COMP0279', 4, 'DCOMP');
 INSERT INTO universidade.disciplina VALUES('COMP0281', 'Desenvolvimento de Software III', 'COMP0280', 4, 'DCOMP');
 INSERT INTO universidade.disciplina VALUES('COMP0298', 'Redes de Computadores', NULL, 4, NULL);
-INSERT INTO universidade.disciplina VALUES('COMP0311', 'Banco de dados', 'COMP0213', 4, 'DCOMP');     
+INSERT INTO universidade.disciplina VALUES('COMP0311', 'Banco de dados', 'COMP0213', 4, 'DCOMP');
 INSERT INTO universidade.disciplina VALUES('COMP0326', 'Sistemas Distribuídos', 'COMP0298', 4, 'DCOMP');
 INSERT INTO universidade.disciplina VALUES ('MAT0064', 'Cálculo I', NULL, 6, 'DMA');
 INSERT INTO universidade.disciplina VALUES ('MAT0065', 'Cálculo II', NULL, 6, 'DMA');
@@ -552,17 +550,3 @@ INSERT INTO universidade.cursa VALUES('E106', 25,6.0);
 INSERT INTO universidade.cursa VALUES('E111', 25,7.5);
 INSERT INTO universidade.cursa VALUES('E109', 25,6.0);
 INSERT INTO universidade.cursa VALUES('E112', 25,9.0);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
