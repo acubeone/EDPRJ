@@ -115,80 +115,80 @@ def ensure_indexes(database: Database) -> None:
 
 
 class UsuarioRepositoryMongo(RepositoryMongo[db.Usuario]):
-	collection_name = "usuario"
+	name = "usuario"
 	entity_cls = db.Usuario
 
 
 class ProfessorRepositoryMongo(RepositoryMongo[db.Professor]):
-	collection_name = "professor"
+	name = "professor"
 	entity_cls = db.Professor
 
 
 class DepartamentoRepositoryMongo(RepositoryMongo[db.Departamento]):
-	collection_name = "departamento"
+	name = "departamento"
 	entity_cls = db.Departamento
 
 
 class CursoRepositoryMongo(RepositoryMongo[db.Curso]):
-	collection_name = "curso"
+	name = "curso"
 	entity_cls = db.Curso
 
 
 class EstudanteRepositoryMongo(RepositoryMongo[db.Estudante]):
-	collection_name = "estudante"
+	name = "estudante"
 	entity_cls = db.Estudante
 
 
 class VinculoRepositoryMongo(RepositoryMongo[db.Vinculo]):
-	collection_name = "vinculo"
+	name = "vinculo"
 	entity_cls = db.Vinculo
 
 
 class ProjetoRepositoryMongo(RepositoryMongo[db.Projeto]):
-	collection_name = "projeto"
+	name = "projeto"
 	entity_cls = db.Projeto
 
 
 class PlanoRepositoryMongo(RepositoryMongo[db.Plano]):
-	collection_name = "plano"
+	name = "plano"
 	entity_cls = db.Plano
 
 
 class DisciplinaRepositoryMongo(RepositoryMongo[db.Disciplina]):
-	collection_name = "disciplina"
+	name = "disciplina"
 	entity_cls = db.Disciplina
 
 
 class SemestreRepositoryMongo(RepositoryMongo[db.Semestre]):
-	collection_name = "semestre"
+	name = "semestre"
 	entity_cls = db.Semestre
 
 
 class SalaRepositoryMongo(RepositoryMongo[db.Sala]):
-	collection_name = "sala"
+	name = "sala"
 	entity_cls = db.Sala
 
 
 class HorarioRepositoryMongo(RepositoryMongo[db.Horario]):
-	collection_name = "horario"
+	name = "horario"
 	entity_cls = db.Horario
 
 
 class TurmaRepositoryMongo(RepositoryMongo[db.Turma]):
-	collection_name = "turma"
+	name = "turma"
 	entity_cls = db.Turma
 
 
 class LecionaRepositoryMongo(RepositoryMongo[db.Leciona]):
-	collection_name = "leciona"
+	name = "leciona"
 	entity_cls = db.Leciona
 
 
 class AlocacaoRepositoryMongo(RepositoryMongo[db.Alocacao]):
-	collection_name = "alocacao"
+	name = "alocacao"
 	entity_cls = db.Alocacao
 
 
 class CursaRepositoryMongo(RepositoryMongo[db.Cursa]):
-	collection_name = "cursa"
+	name = "cursa"
 	entity_cls = db.Cursa
