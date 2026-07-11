@@ -1,18 +1,28 @@
 services:
-    db:
-        image: postgres:16-alpine
+    postgres:
+        image: postgres:latest
         restart: always
         ports:
-            - "5432:5432"
+            - "${POSTGRES_PORT}:${POSTGRES_PORT}"
         environment:
             POSTGRES_USER: ${DB_USER}
             POSTGRES_PASSWORD: ${DB_PASSWORD}
             POSTGRES_DB: ${DB_NAME}
-            POSTGRES_HOST: ${DB_HOST}
-            POSTGRES_PORT: ${DB_PORT}
         volumes:
             - ./res/dump.sql:/docker-entrypoint-initdb.d/dump.sql
             - pgdata:/var/lib/postgresql/data
+    mongo:
+        image: mongo:latest
+        ports:
+            - "${MONGO_PORT}:${MONGO_PORT}"
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+            MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+            MONGO_INITDB_DATABASE: ${DB_NAME}
+        volumes:
+            - mongodata:/data/db
 volumes:
     pgdata:
+        driver: local
+    mongodata:
         driver: local

@@ -1,24 +1,49 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import date
-from typing import Optional, Literal
+from typing import TYPE_CHECKING, Optional, Literal
+
+
+if TYPE_CHECKING:
+	from _typeshed import DataclassInstance
+
+	type DataclassT = DataclassInstance
+else:
+	from typing import Any
+
+	type DataclassT = Any
+
+
+class DuplicateKeyException(Exception):
+	def __init__(self, entity_name: str):
+		super().__init__(f"{entity_name} with this key already exists")
+
+
+class ReferencedRowExistsError(Exception):
+	def __init__(self, entity_name: str, blocking_collection: str):
+		super().__init__(
+			f"Cannot delete {entity_name}: still referenced in {blocking_collection}"
+		)
 
 
 class AbstractRepository[T](ABC):
+	name: str
+	entity_cls: type[T]
+
 	@abstractmethod
-	def create(self, entity: T) -> T: ...
+	def create(self, entity: T) -> T | None: ...
 
 	@abstractmethod
 	def get(self, key: dict) -> T | None: ...
 
 	@abstractmethod
-	def update(self, key: dict, fields: dict) -> T: ...
+	def update(self, key: dict, fields: dict) -> T | None: ...
 
 	@abstractmethod
 	def delete(self, key: dict) -> bool: ...
 
 	@abstractmethod
-	def list(self, filters: dict | None = None) -> list[T]: ...
+	def list(self, filters: dict = {}) -> list[T]: ...
 
 
 TipoFormacao = Literal["Gradução", "Especialização", "Mestrado", "Doutorado"]

@@ -1,22 +1,14 @@
 from dataclasses import asdict
 import os
-from typing import TYPE_CHECKING
 
 import psycopg as pg
 from psycopg import sql
-from psycopg.rows import DictRow, dict_row
+from psycopg.errors import ForeignKeyViolation, UniqueViolation
+from psycopg.rows import dict_row
+from pymongo.errors import DuplicateKeyError
 
 import db
-from db import AbstractRepository
-
-if TYPE_CHECKING:
-	from _typeshed import DataclassInstance
-
-	type DataclassT = DataclassInstance
-else:
-	from typing import Any
-
-	type DataclassT = Any
+from db import AbstractRepository, DataclassT
 
 
 def get_connection() -> pg.Connection:
@@ -30,13 +22,9 @@ def get_connection() -> pg.Connection:
 
 
 class RepositoryPG[T: DataclassT](AbstractRepository[T]):
-	conn: pg.Connection
-	table_name: str
-	entity_cls: type[T]
-
 	def __init__(self, conn: pg.Connection) -> None:
 		self.conn = conn
-		self._schema, self._table = self.table_name.split(".")
+		self._schema, self._table = self.name.split(".")
 
 	@property
 	def _table_ident(self) -> sql.Identifier:
@@ -51,7 +39,7 @@ class RepositoryPG[T: DataclassT](AbstractRepository[T]):
 			for col in key
 		)
 
-	def create(self, entity: T) -> T:
+	def create(self, entity: T) -> T | None:
 		data = {k: v for k, v in asdict(entity).items() if v is not None}
 		query = sql.SQL("INSERT INTO {} ({}) VALUES ({}) RETURNING *").format(
 			self._table_ident,
@@ -59,13 +47,17 @@ class RepositoryPG[T: DataclassT](AbstractRepository[T]):
 			sql.SQL(", ").join(sql.Placeholder(c) for c in data),
 		)
 
-		with self.conn.cursor(row_factory=dict_row) as cur:
-			cur.execute(query, data)
-			row = cur.fetchone()
+		# Do not accept duplicates
+		try:
+			with self.conn.cursor(row_factory=dict_row) as cur:
+				cur.execute(query, data)
+				row = cur.fetchone()
+			self.conn.commit()
+		except UniqueViolation:
+			self.conn.rollback()  # Revert any violations
+			raise DuplicateKeyError(self.entity_cls.__name__)
 
-		self.conn.commit()
-		assert row is not None, "Failed to fetch row"
-		return self._row_to_entity(row)
+		return self._row_to_entity(row) if row else None
 
 	def get(self, key: dict) -> T | None:
 		query = sql.SQL("SELECT * FROM {} WHERE {}").format(
@@ -78,7 +70,7 @@ class RepositoryPG[T: DataclassT](AbstractRepository[T]):
 
 		return self._row_to_entity(row) if row else None
 
-	def update(self, key: dict, fields: dict) -> T:
+	def update(self, key: dict, fields: dict) -> T | None:
 		set_params = {f"set_{k}": v for k, v in fields.items()}
 		set_sql = sql.SQL(", ").join(
 			sql.SQL("{} = {}").format(
@@ -90,26 +82,42 @@ class RepositoryPG[T: DataclassT](AbstractRepository[T]):
 		query = sql.SQL("UPDATE {} SET {} WHERE {} RETURNING *").format(
 			self._table_ident, set_sql, self._where_sql(key)
 		)
-		with self.conn.cursor(row_factory=dict_row) as cur:
-			cur.execute(query, {**set_params, **key})
-			row = cur.fetchone()
 
-		self.conn.commit()
-		assert row is not None, "Failed to fetch row"
-		return self._row_to_entity(row)
+		try:
+			with self.conn.cursor(row_factory=dict_row) as cur:
+				cur.execute(query, {**set_params, **key})
+				row = cur.fetchone()
+			self.conn.commit()
+		except UniqueViolation:
+			self.conn.rollback()
+			raise DuplicateKeyError(self.entity_cls.__name__)
+		except ForeignKeyViolation:
+			self.conn.rollback()
+			raise ReferenceError(
+				f"{self.entity_cls.__name__} update referecens a nonexistent row"
+			)
+
+		return self._row_to_entity(row) if row else None
 
 	def delete(self, key: dict) -> bool:
 		query = sql.SQL("DELETE FROM {} WHERE {}").format(
 			self._table_ident, self._where_sql(key)
 		)
-		with self.conn.cursor() as cur:
-			cur.execute(query, key)
-			deleted = cur.rowcount > 0
 
-		self.conn.commit()
+		try:
+			with self.conn.cursor() as cur:
+				cur.execute(query, key)
+				deleted = cur.rowcount > 0
+			self.conn.commit()
+		except ForeignKeyViolation:
+			self.conn.rollback()
+			raise ReferenceError(
+				f"{self.entity_cls.__name__} is still referenced by other rows"
+			)
+
 		return deleted
 
-	def list(self, filters: dict | None = None) -> list[T]:
+	def list(self, filters: dict = {}) -> list[T]:
 		if filters:
 			query = sql.SQL("SELECT * FROM {} WHERE {}").format(
 				self._table_ident, self._where_sql(filters)
@@ -127,104 +135,80 @@ class RepositoryPG[T: DataclassT](AbstractRepository[T]):
 
 
 class UsuarioRepositoryPG(RepositoryPG[db.Usuario]):
-	table_name = "universidade.usuario"
+	name = "universidade.usuario"
 	entity_cls = db.Usuario
 
 
 class ProfessorRepositoryPG(RepositoryPG[db.Professor]):
-	table_name = "universidade.professor"
+	name = "universidade.professor"
 	entity_cls = db.Professor
 
 
 class DepartamentoRepositoryPG(RepositoryPG[db.Departamento]):
-	table_name = "universidade.departamento"
+	name = "universidade.departamento"
 	entity_cls = db.Departamento
 
 
 class CursoRepositoryPG(RepositoryPG[db.Curso]):
-	table_name = "universidade.curso"
+	name = "universidade.curso"
 	entity_cls = db.Curso
 
 
 class EstudanteRepositoryPG(RepositoryPG[db.Estudante]):
-	table_name = "universidade.estudante"
+	name = "universidade.estudante"
 	entity_cls = db.Estudante
 
 
 class VinculoRepositoryPG(RepositoryPG[db.Vinculo]):
-	table_name = "universidade.vinculo"
+	name = "universidade.vinculo"
 	entity_cls = db.Vinculo
 
 
 class ProjetoRepositoryPG(RepositoryPG[db.Projeto]):
-	table_name = "universidade.projeto"
+	name = "universidade.projeto"
 	entity_cls = db.Projeto
 
 
 class PlanoRepositoryPG(RepositoryPG[db.Plano]):
-	table_name = "universidade.plano"
+	name = "universidade.plano"
 	entity_cls = db.Plano
 
 
 class DisciplinaRepositoryPG(RepositoryPG[db.Disciplina]):
-	table_name = "universidade.disciplina"
+	name = "universidade.disciplina"
 	entity_cls = db.Disciplina
 
 
 class SemestreRepositoryPG(RepositoryPG[db.Semestre]):
-	table_name = "universidade.semestre"
+	name = "universidade.semestre"
 	entity_cls = db.Semestre
 
 
 class SalaRepositoryPG(RepositoryPG[db.Sala]):
-	table_name = "universidade.sala"
+	name = "universidade.sala"
 	entity_cls = db.Sala
 
 
 class HorarioRepositoryPG(RepositoryPG[db.Horario]):
-	table_name = "universidade.horario"
+	name = "universidade.horario"
 	entity_cls = db.Horario
 
 
 class TurmaRepositoryPG(RepositoryPG[db.Turma]):
-	table_name = "universidade.turma"
+	name = "universidade.turma"
 	entity_cls = db.Turma
 
 
 class LecionaRepositoryPG(RepositoryPG[db.Leciona]):
-	table_name = "universidade.leciona"
+	name = "universidade.leciona"
 	entity_cls = db.Leciona
 
 
 class AlocacaoRepositoryPG(RepositoryPG[db.Alocacao]):
-	table_name = "universidade.alocacao"
+	name = "universidade.alocacao"
 	entity_cls = db.Alocacao
 
 
 class CursaRepositoryPG(RepositoryPG[db.Cursa]):
-	table_name = "universidade.cursa"
+	name = "universidade.cursa"
 	entity_cls = db.Cursa
-
-
-REPO_REGISTRY_PG = {
-	"usuario": UsuarioRepositoryPG,
-	"professor": ProfessorRepositoryPG,
-	"departamento": DepartamentoRepositoryPG,
-	"curso": CursaRepositoryPG,
-	"estudante": EstudanteRepositoryPG,
-	"vinculo": VinculoRepositoryPG,
-	"projeto": ProjetoRepositoryPG,
-	"plano": PlanoRepositoryPG,
-	"disciplina": DisciplinaRepositoryPG,
-	"semestre": SemestreRepositoryPG,
-	"sala": SalaRepositoryPG,
-	"horario": HorarioRepositoryPG,
-	"turma": TurmaRepositoryPG,
-	"leciona": LecionaRepositoryPG,
-	"alocacao": AlocacaoRepositoryPG,
-	"cursa": CursaRepositoryPG,
-}
-
-
-def get_repository(entity_name: str, conn: pg.Connection) -> RepositoryPG:
-	return REPO_REGISTRY_PG[entity_name](conn)
