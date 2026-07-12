@@ -1,0 +1,21 @@
+{
+	"$jsonSchema": {
+		"bsonType": "object",
+		"required": ["mat_estudante"],
+		"properties": {
+			"mat_estudante": {
+				"bsonType": "string"
+			},
+			"cpf": {
+				"bsonType": ["decimal", "null"],
+				"description": "Must be a number, matches tipo_cpf NUMERIC(13)"
+			},
+			"mc": {
+				"bsonType": ["decimal", "null"]
+			},
+			"ano_ingresso": {
+				"bsonType": ["int", "null"]
+			}
+		}
+	}
+}

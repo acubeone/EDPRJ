@@ -19,19 +19,6 @@ REFERENCE_MAP: dict[str, list[tuple[str, str]]] = {
 		("plano", "mat_estudante"),
 		("cursa", "mat_estudante"),
 	],
-	"professor": [
-		("plano", "mat_professor"),
-		("leciona", "mat_professor"),
-		("departamento", "chefe"),
-	],
-	"departamento": [
-		("professor", "departamento"),
-		("disciplina", "depto_responsavel"),
-	],
-	"disciplina": [("turma", "cod_disc"), ("disciplina", "pre_req")],
-	"semestre": [("turma", "ano")],
-	"turma": [("leciona", "id_turma"), ("alocacao", "id_turma"), ("cursa", "id_turma")],
-	"projeto": [("plano", "id_projeto")],
 	"usuario": [("professor", "cpf"), ("estudante", "cpf")],
 }
 
@@ -88,14 +75,6 @@ class RepositoryMongo[T: DataclassT](AbstractRepository[T]):
 	def list(self, filters: dict = {}) -> list[T]:
 		docs = self.collection.find(filters)
 		return [self._row_to_entity(d) for d in docs]
-
-
-def ensure_indexes(database: Database) -> None:
-	# PKs
-	database["usuario"].create_index("cpf", unique=True)
-	database["curso"].create_index("idcurso", unique=True)
-	database["estudante"].create_index("mat_estudante", unique=True)
-	database["vinculo"].create_index("idvinculo", unique=True)
 
 
 class UsuarioRepositoryMongo(RepositoryMongo[db.Usuario]):

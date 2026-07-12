@@ -1,0 +1,27 @@
+{
+	"$jsonSchema": {
+		"bsonType": "object",
+		"properties": {
+			"idvinculo": {
+				"bsonType": ["int", "long", "null"]
+			},
+			"mat_estudante": {
+				"bsonType": ["string", "null"],
+				"maxLength": 7
+			},
+			"curso": {
+				"bsonType": ["int", "null"]
+			},
+			"data_entrada": {
+				"bsonType": ["date", "null"]
+			},
+			"status": {
+				"bsonType": ["string", "null"],
+				"enum": ["Ativo", "Cancelada", "Formando", "Graduado", null]
+			},
+			"data_saida": {
+				"bsonType": ["date", "null"]
+			}
+		}
+	}
+}

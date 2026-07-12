@@ -1,6 +1,6 @@
 services:
     postgres:
-        image: postgres:latest
+        image: postgres:18-alpine
         restart: always
         ports:
             - "${POSTGRES_PORT}:${POSTGRES_PORT}"
@@ -12,7 +12,7 @@ services:
             - ./res/dump.sql:/docker-entrypoint-initdb.d/dump.sql
             - pgdata:/var/lib/postgresql
     mongo:
-        image: mongo:latest
+        image: mongo:8.2.11
         restart: always
         ports:
             - "${MONGO_PORT}:${MONGO_PORT}"
@@ -22,6 +22,27 @@ services:
             MONGO_INITDB_DATABASE: ${DB_NAME}
         volumes:
             - mongodata:/data/db
+        healthcheck:
+            test: echo 'db.runCommand("ping").ok | mongosh --quiet'
+            interval: 5s
+            timeout: 5s
+            retries: 5
+    mongo-setup:
+        image: python:3.11-slim
+        depends_on:
+            mongo:
+                condition: service_healthy
+        volumes:
+            - ./res/setup.py:/app/setup.py
+            - ./res/schemas:/app/schemas
+        working_dir: /app
+        environment:
+            DB_USER: ${DB_USER}
+            DB_PASSWORD: ${DB_PASSWORD}
+            DB_NAME: ${DB_NAME}
+            MONGO_HOST: mongo # container-to-container
+            MONGO_PORT: 27017
+        command: sh -c "pip install --no-cache-dir pymongo python-dotenv && python setup.py"
 volumes:
     pgdata:
         driver: local

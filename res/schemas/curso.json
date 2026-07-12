@@ -1,0 +1,36 @@
+{
+	"$jsonSchema": {
+		"bsonType": "object",
+		"required": ["nome", "turno"],
+		"properties": {
+			"idcurso": {
+				"bsonType": ["int", "long", "null"]
+			},
+			"nome": {
+				"bsonType": "string",
+				"maxLength": 100
+			},
+			"grau": {
+				"bsonType": ["string", "null"],
+				"enum": ["Bacharelado", "Licenciatura Plena", null]
+			},
+			"turno": {
+				"bsonType": "string",
+				"enum": [
+					"Matutino",
+					"Vespertino",
+					"Noturno",
+					"Turno Indefinido"
+				]
+			},
+			"campus": {
+				"bsonType": "string",
+				"maxLength": 100
+			},
+			"nivel": {
+				"bsonType": ["string", "null"],
+				"enum": ["Graduação", "Mestrado", "Doutorado", "Lato", null]
+			}
+		}
+	}
+}
