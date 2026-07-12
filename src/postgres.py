@@ -1,5 +1,4 @@
 from dataclasses import asdict
-import os
 
 import psycopg as pg
 from psycopg import sql
@@ -9,16 +8,6 @@ from pymongo.errors import DuplicateKeyError
 
 import db
 from db import AbstractRepository, DataclassT
-
-
-def get_connection() -> pg.Connection:
-	return pg.connect(
-		dbname=os.environ["DB_NAME"],
-		user=os.environ["DB_USER"],
-		password=os.environ["DB_PASSWORD"],
-		host=os.environ["DB_HOST"],
-		port=os.environ["DB_PORT"],
-	)
 
 
 class RepositoryPG[T: DataclassT](AbstractRepository[T]):
@@ -139,16 +128,6 @@ class UsuarioRepositoryPG(RepositoryPG[db.Usuario]):
 	entity_cls = db.Usuario
 
 
-class ProfessorRepositoryPG(RepositoryPG[db.Professor]):
-	name = "universidade.professor"
-	entity_cls = db.Professor
-
-
-class DepartamentoRepositoryPG(RepositoryPG[db.Departamento]):
-	name = "universidade.departamento"
-	entity_cls = db.Departamento
-
-
 class CursoRepositoryPG(RepositoryPG[db.Curso]):
 	name = "universidade.curso"
 	entity_cls = db.Curso
@@ -162,53 +141,3 @@ class EstudanteRepositoryPG(RepositoryPG[db.Estudante]):
 class VinculoRepositoryPG(RepositoryPG[db.Vinculo]):
 	name = "universidade.vinculo"
 	entity_cls = db.Vinculo
-
-
-class ProjetoRepositoryPG(RepositoryPG[db.Projeto]):
-	name = "universidade.projeto"
-	entity_cls = db.Projeto
-
-
-class PlanoRepositoryPG(RepositoryPG[db.Plano]):
-	name = "universidade.plano"
-	entity_cls = db.Plano
-
-
-class DisciplinaRepositoryPG(RepositoryPG[db.Disciplina]):
-	name = "universidade.disciplina"
-	entity_cls = db.Disciplina
-
-
-class SemestreRepositoryPG(RepositoryPG[db.Semestre]):
-	name = "universidade.semestre"
-	entity_cls = db.Semestre
-
-
-class SalaRepositoryPG(RepositoryPG[db.Sala]):
-	name = "universidade.sala"
-	entity_cls = db.Sala
-
-
-class HorarioRepositoryPG(RepositoryPG[db.Horario]):
-	name = "universidade.horario"
-	entity_cls = db.Horario
-
-
-class TurmaRepositoryPG(RepositoryPG[db.Turma]):
-	name = "universidade.turma"
-	entity_cls = db.Turma
-
-
-class LecionaRepositoryPG(RepositoryPG[db.Leciona]):
-	name = "universidade.leciona"
-	entity_cls = db.Leciona
-
-
-class AlocacaoRepositoryPG(RepositoryPG[db.Alocacao]):
-	name = "universidade.alocacao"
-	entity_cls = db.Alocacao
-
-
-class CursaRepositoryPG(RepositoryPG[db.Cursa]):
-	name = "universidade.cursa"
-	entity_cls = db.Cursa

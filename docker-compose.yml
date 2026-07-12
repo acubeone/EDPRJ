@@ -13,6 +13,7 @@ services:
             - pgdata:/var/lib/postgresql
     mongo:
         image: mongo:latest
+        restart: always
         ports:
             - "${MONGO_PORT}:${MONGO_PORT}"
         environment:

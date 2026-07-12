@@ -18,40 +18,16 @@ DEFAULT_TIMEOUT = 5000  # 5 seconds
 
 REPO_REGISTRY_PG = {
 	"usuario": postgres.UsuarioRepositoryPG,
-	"professor": postgres.ProfessorRepositoryPG,
-	"departamento": postgres.DepartamentoRepositoryPG,
-	"curso": postgres.CursaRepositoryPG,
+	"curso": postgres.CursoRepositoryPG,
 	"estudante": postgres.EstudanteRepositoryPG,
 	"vinculo": postgres.VinculoRepositoryPG,
-	"projeto": postgres.ProjetoRepositoryPG,
-	"plano": postgres.PlanoRepositoryPG,
-	"disciplina": postgres.DisciplinaRepositoryPG,
-	"semestre": postgres.SemestreRepositoryPG,
-	"sala": postgres.SalaRepositoryPG,
-	"horario": postgres.HorarioRepositoryPG,
-	"turma": postgres.TurmaRepositoryPG,
-	"leciona": postgres.LecionaRepositoryPG,
-	"alocacao": postgres.AlocacaoRepositoryPG,
-	"cursa": postgres.CursaRepositoryPG,
 }
 
 REPO_REGISTRY_MONGO = {
 	"usuario": mongo.UsuarioRepositoryMongo,
-	"professor": mongo.ProfessorRepositoryMongo,
-	"departamento": mongo.DepartamentoRepositoryMongo,
 	"curso": mongo.CursoRepositoryMongo,
 	"estudante": mongo.EstudanteRepositoryMongo,
 	"vinculo": mongo.VinculoRepositoryMongo,
-	"projeto": mongo.ProjetoRepositoryMongo,
-	"plano": mongo.PlanoRepositoryMongo,
-	"disciplina": mongo.DisciplinaRepositoryMongo,
-	"semestre": mongo.SemestreRepositoryMongo,
-	"sala": mongo.SalaRepositoryMongo,
-	"horario": mongo.HorarioRepositoryMongo,
-	"turma": mongo.TurmaRepositoryMongo,
-	"leciona": mongo.LecionaRepositoryMongo,
-	"alocacao": mongo.AlocacaoRepositoryMongo,
-	"cursa": mongo.CursaRepositoryMongo,
 }
 
 

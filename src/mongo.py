@@ -91,42 +91,16 @@ class RepositoryMongo[T: DataclassT](AbstractRepository[T]):
 
 
 def ensure_indexes(database: Database) -> None:
-	# Single PKs
-	database["estudante"].create_index("mat_estudante", unique=True)
-	database["professor"].create_index("mat_professor", unique=True)
+	# PKs
 	database["usuario"].create_index("cpf", unique=True)
-	database["departamento"].create_index("cod_depto", unique=True)
 	database["curso"].create_index("idcurso", unique=True)
-	database["projeto"].create_index("id_projeto", unique=True)
-	database["disciplina"].create_index("cod_disc", unique=True)
-	database["sala"].create_index("id_sala", unique=True)
-	database["horario"].create_index("id_horario", unique=True)
-	database["turma"].create_index("id_turma", unique=True)
+	database["estudante"].create_index("mat_estudante", unique=True)
 	database["vinculo"].create_index("idvinculo", unique=True)
-
-	# Composite PKs
-	database["plano"].create_index([("mat_estudante", 1), ("ano", 1)], unique=True)
-	database["semestre"].create_index([("ano", 1), ("semestre", 1)], unique=True)
-	database["leciona"].create_index(
-		[("id_turma", 1), ("mat_professor", 1)], unique=True
-	)
-	database["alocacao"].create_index([("id_turma", 1), ("id_horario", 1)], unique=True)
-	database["cursa"].create_index([("mat_estudante", 1), ("id_turma", 1)], unique=True)
 
 
 class UsuarioRepositoryMongo(RepositoryMongo[db.Usuario]):
 	name = "usuario"
 	entity_cls = db.Usuario
-
-
-class ProfessorRepositoryMongo(RepositoryMongo[db.Professor]):
-	name = "professor"
-	entity_cls = db.Professor
-
-
-class DepartamentoRepositoryMongo(RepositoryMongo[db.Departamento]):
-	name = "departamento"
-	entity_cls = db.Departamento
 
 
 class CursoRepositoryMongo(RepositoryMongo[db.Curso]):
@@ -142,53 +116,3 @@ class EstudanteRepositoryMongo(RepositoryMongo[db.Estudante]):
 class VinculoRepositoryMongo(RepositoryMongo[db.Vinculo]):
 	name = "vinculo"
 	entity_cls = db.Vinculo
-
-
-class ProjetoRepositoryMongo(RepositoryMongo[db.Projeto]):
-	name = "projeto"
-	entity_cls = db.Projeto
-
-
-class PlanoRepositoryMongo(RepositoryMongo[db.Plano]):
-	name = "plano"
-	entity_cls = db.Plano
-
-
-class DisciplinaRepositoryMongo(RepositoryMongo[db.Disciplina]):
-	name = "disciplina"
-	entity_cls = db.Disciplina
-
-
-class SemestreRepositoryMongo(RepositoryMongo[db.Semestre]):
-	name = "semestre"
-	entity_cls = db.Semestre
-
-
-class SalaRepositoryMongo(RepositoryMongo[db.Sala]):
-	name = "sala"
-	entity_cls = db.Sala
-
-
-class HorarioRepositoryMongo(RepositoryMongo[db.Horario]):
-	name = "horario"
-	entity_cls = db.Horario
-
-
-class TurmaRepositoryMongo(RepositoryMongo[db.Turma]):
-	name = "turma"
-	entity_cls = db.Turma
-
-
-class LecionaRepositoryMongo(RepositoryMongo[db.Leciona]):
-	name = "leciona"
-	entity_cls = db.Leciona
-
-
-class AlocacaoRepositoryMongo(RepositoryMongo[db.Alocacao]):
-	name = "alocacao"
-	entity_cls = db.Alocacao
-
-
-class CursaRepositoryMongo(RepositoryMongo[db.Cursa]):
-	name = "cursa"
-	entity_cls = db.Cursa

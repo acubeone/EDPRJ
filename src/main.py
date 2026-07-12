@@ -13,21 +13,9 @@ import db
 
 ENTITY_REGISTRY = {
 	"usuario": db.Usuario,
-	"professor": db.Professor,
-	"departamento": db.Departamento,
-	"curso": db.Cursa,
+	"curso": db.Curso,
 	"estudante": db.Estudante,
 	"vinculo": db.Vinculo,
-	"projeto": db.Projeto,
-	"plano": db.Plano,
-	"disciplina": db.Disciplina,
-	"semestre": db.Semestre,
-	"sala": db.Sala,
-	"horario": db.Horario,
-	"turma": db.Turma,
-	"leciona": db.Leciona,
-	"alocacao": db.Alocacao,
-	"cursa": db.Cursa,
 }
 
 
