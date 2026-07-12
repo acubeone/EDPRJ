@@ -88,7 +88,7 @@ Fields: {", ".join(fields)}
 Actions:
   {current_entity} create --data '{{"field": "value", ...}}'
   {current_entity} get    --key '{{"field": "value"}}'
-  {current_entity} update --key '{{"field": "value"}}' --data '{{"field": "new_value"}}'
+  {current_entity} update --key '{{"field": "value"}}' --fields '{{"field": "new_value"}}'
   {current_entity} delete --key '{{"field": "value"}}'
   {current_entity} list
 """)

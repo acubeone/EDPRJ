@@ -45,6 +45,14 @@ class RepositoryPG[T: DataclassT](AbstractRepository[T]):
 		except UniqueViolation:
 			self.conn.rollback()  # Revert any violations
 			raise DuplicateKeyError(self.entity_cls.__name__)
+		except ForeignKeyViolation:
+			self.conn.rollback()
+			raise ReferenceError(
+				f"{self.entity_cls.__name__} update references a nonexistent row"
+			)
+		except Exception:
+			self.conn.rollback()
+			raise
 
 		return self._row_to_entity(row) if row else None
 
