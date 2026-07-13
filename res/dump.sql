@@ -18,7 +18,6 @@ CREATE TABLE universidade.usuario(
 CREATE TYPE universidade.tipo_jornada AS ENUM ('20h', '40h', 'DE');
 CREATE TYPE universidade.tipo_formacao AS ENUM ('Graduação', 'Especialização', 'Mestrado', 'Doutorado');
 
-
 CREATE TYPE universidade.tipo_grau AS ENUM ('Bacharelado', 'Licenciatura Plena');
 CREATE TYPE universidade.tipo_nivel AS ENUM ('Graduação', 'Mestrado', 'Doutorado', 'Lato');
 CREATE TYPE universidade.tipo_turno AS ENUM ('Matutino', 'Vespertino', 'Noturno', 'Turno Indefinido');
