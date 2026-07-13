@@ -4,7 +4,7 @@
 		"required": ["cpf", "nome"],
 		"properties": {
 			"cpf": {
-				"bsonType": "decimal",
+				"bsonType": ["int", "long", "decimal"],
 				"description": "Must be a number, matches tipo_cpf NUMERIC(13)"
 			},
 			"nome": {

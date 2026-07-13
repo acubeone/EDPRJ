@@ -18,6 +18,8 @@ ENTITY_REGISTRY = {
 	"vinculo": db.Vinculo,
 }
 
+backend_kind: str = ""
+
 
 def _parse_arguments() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(description="Ferramenta CRUD")
@@ -60,6 +62,7 @@ def _dispatch_action(
 ):
 	if cmd.action == "create":
 		data = json.loads(cmd.data)
+		data = db.parse_dates(data, ENTITY_REGISTRY[entity_name], backend_kind)
 		entity = ENTITY_REGISTRY[entity_name](**data)
 		return repo.create(entity)
 	elif cmd.action == "get":
@@ -160,6 +163,7 @@ def _command_line(backend: Backend, args: argparse.Namespace) -> None:
 def main() -> int | None:
 	args = _parse_arguments()
 
+	backend_kind = args.backend
 	backend = Backend(args.backend)
 	try:
 		print(f"Attempting connection to {args.backend}...")

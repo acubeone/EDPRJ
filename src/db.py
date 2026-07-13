@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import dataclasses
 from datetime import date
+from datetime import datetime
 from typing import TYPE_CHECKING, Optional, Literal
+import typing
 
 
 if TYPE_CHECKING:
@@ -24,6 +27,19 @@ class ReferencedRowExistsError(Exception):
 		super().__init__(
 			f"Cannot delete {entity_name}: still referenced in {blocking_collection}"
 		)
+
+
+def parse_dates(data: dict, entity_cls, backend_kind: str) -> dict:
+	hints = typing.get_type_hints(entity_cls)
+	for name, hint in hints.items():
+		if name not in data or data[name] is None:
+			continue
+		args_ = typing.get_args(hint)
+		real_type = next((a for a in args_ if a is not type(None)), hint)
+		if real_type is date:
+			parsed = datetime.strptime(data[name], "%Y-%m-%d")
+			data[name] = parsed if backend_kind == "mongo" else parsed.date()
+	return data
 
 
 class AbstractRepository[T](ABC):
