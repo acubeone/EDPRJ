@@ -9,8 +9,13 @@ services:
             POSTGRES_PASSWORD: ${DB_PASSWORD}
             POSTGRES_DB: ${DB_NAME}
         volumes:
-            - ./res/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+            - ./res/dump.sql:/docker-entrypoint-initdb.d/01_dump.sql
+            - ./res/dw.sql:/docker-entrypoint-initdb.d/02_dw.sql
+            - ./res/etl_user.sql:/docker-entrypoint-initdb.d/03_etl_user.sql
+            - ./res/postgresql.conf:/etc/postgresql/postgresql.conf
+            - ./res/pg_hba.conf:/etc/postgresql/pg_hba.conf
             - pgdata:/var/lib/postgresql
+        command: postgres -c config_file=/etc/postgresql/postgresql.conf -c hba_file=/etc/postgresql/pg_hba.conf
     mongo:
         image: mongo:8.2.11
         restart: always
