@@ -44,10 +44,10 @@ CREATE TABLE fato_turma (
     num_discentes INT,
     media_notas DECIMAL,
     num_aprovados INT,
-    num_reprovados INT
+    num_reprovados INT,
 
     FOREIGN KEY (id_professor) REFERENCES dim_professor(id_professor),
     FOREIGN KEY (id_disciplina) REFERENCES dim_disciplina(id_disciplina),
     FOREIGN KEY (id_departamento) REFERENCES dim_departamento(id_departamento),
-    FOREIGN KEY (id_semestre) REFERENCES dim_semestre(id_semestre),
+    FOREIGN KEY (id_semestre) REFERENCES dim_semestre(id_semestre)
 );
